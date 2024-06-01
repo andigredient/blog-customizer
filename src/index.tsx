@@ -16,17 +16,12 @@ const root = createRoot(domNode);
 
 const App = () => {
 
-	const [formState, setFormState] = useState(defaultArticleState)
+	//const [formState, setFormState] = useState(defaultArticleState)
 	const [appState, setAppState] = useState(defaultArticleState)
+//----------------------------------------------------------------------------------
+	
 
-	const applyState = () => {
-		setAppState(formState);
-	}
-
-	const defaultState = () => {
-		setAppState(defaultArticleState);
-		setFormState(defaultArticleState)
-	}
+	
 
 	return (
 		<div
@@ -40,7 +35,7 @@ const App = () => {
 					'--bg-color': appState.backgroundColor.value,
 				} as CSSProperties
 			}>
-			<ArticleParamsForm appState = {formState} setAppState = {setFormState} applyState={applyState} defaultState={defaultState} />
+			<ArticleParamsForm  setAppState = {setAppState} />
 			<Article />
 		</div>
 	);

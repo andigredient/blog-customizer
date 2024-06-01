@@ -14,18 +14,6 @@
 }
 
 .container_open {
-	position: fixed;
-	top: 31px;
-	display: flex;
-	flex-shrink: 0;
-	justify-content: center;
-	align-items: center;
-	box-sizing: border-box;
-	width: 100px;
-	height: 100px;
-	background-color: #000000;
-	border-right: 1px;
-	transition: transform 0.5s ease;
 	transform: translate(616px);
 }
 

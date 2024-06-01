@@ -6,7 +6,7 @@ import { Separator } from 'components/separator';
 import { Text } from 'components/text';
 import clsx from 'clsx';
 
-
+//---------------------------------------------------------------------
 import {
 	OptionType,
 	fontFamilyOptions,
@@ -17,145 +17,144 @@ import {
 	defaultArticleState,
 } from 'src/constants/articleProps';
 
-import React, { FormEvent, useEffect, useState } from 'react';
+import React, { FormEvent, useEffect, useState, useRef } from 'react';
 import styles from './ArticleParamsForm.module.scss';
+import { useOutsideClickClose } from '../select/hooks/useOutsideClickClose';
+
 
 
 type ArticleParamsFormProps = {
-	appState: typeof defaultArticleState;
 	setAppState: React.Dispatch<React.SetStateAction<typeof defaultArticleState>>;
-	applyState: () => void;
-	defaultState: () => void;
+
 };
 
+//appState: typeof defaultArticleState;
 
+export const ArticleParamsForm = ({ setAppState  }:ArticleParamsFormProps) => {
+	const [formState, setFormState] = useState(defaultArticleState);
+	const rootRef = useRef(null);
 
-export const ArticleParamsForm = ({appState, setAppState, applyState, defaultState}:ArticleParamsFormProps) => {
+	
+	const applyState = () => {
+		setAppState(formState);
+	}
+	
+	const setDefaultState = () => {
+		setAppState(defaultArticleState);
+		setFormState(defaultArticleState)
+	}
+	
 	const [isOpen, setOpen] = useState(false); 
 
 	const handleArrowButtonClick = () => {
 		setOpen(!isOpen);
 	};
 
-	function handleArrowCloseEsc(event: KeyboardEvent) {
+	function outsideClickClose(event: KeyboardEvent) {
 		if (event.code == 'Escape') {
 			setOpen(false);
 		}
 	}
 	
 	useEffect(() => {
-		document.addEventListener('keydown', handleArrowCloseEsc);
+		document.addEventListener('keydown', outsideClickClose);
 
 		return () => {
-			document.removeEventListener('keydown', handleArrowCloseEsc);
+			document.removeEventListener('keydown', outsideClickClose);
 		};
 	});
 
 
-	const article = document.querySelector("article");
-	function handleArrowCloseClick(event:MouseEvent) {
-		if (event.target == article) {
-			setOpen(false);
-		}
-	}
-
-	useEffect(() => {
-		document.addEventListener('click', handleArrowCloseClick);
-
-		return () => {
-			document.removeEventListener('click', handleArrowCloseClick);
-		};
-	});
-
-
+	useOutsideClickClose({isOpen, rootRef, onClose:() => setOpen(false), onChange:setOpen})
 
 	
 	
 	const handleChangeFontFamily = (value: OptionType) => {
-		setAppState({ ...appState, fontFamilyOption: value });
+		setFormState({ ...formState, fontFamilyOption: value });
 	};
 
 	const handleChangeFontSize = (value: OptionType) => {
-		setAppState({ ...appState, fontSizeOption: value });
+		setFormState({ ...formState, fontSizeOption: value });
 	};
 
 	const handleChangeFontColor = (value: OptionType) => {
-		setAppState({ ...appState, fontColor: value });
+		setFormState({ ...formState, fontColor: value });
 	};
 
 	const handleChangeBackgroundColor = (value: OptionType) => {
-		setAppState({ ...appState, backgroundColor: value });
+		setFormState({ ...formState, backgroundColor: value });
 	};
 	
 	const handleChangeContentWidth = (value: OptionType) => {
-		setAppState({ ...appState, contentWidth: value });
+		setFormState({ ...formState, contentWidth: value });
 	};
 
 
 	return (
-		<>
-			<ArrowButton isOpen={isOpen} onClick={handleArrowButtonClick} />
+		
+			<div ref = {rootRef}>
+				<ArrowButton isOpen={isOpen} onClick={handleArrowButtonClick} />
 
-			<aside className={clsx ({[styles.container_open]:isOpen, [styles.container]:!isOpen})}>
-				<form className={styles.form} onSubmit={(e:FormEvent) => {
-					e.preventDefault();
-					applyState()
-					}}>
-					
-					<Text as={'h2'} size={31} weight={800} uppercase={true}>
-						Задайте параметры
-					</Text>
-
-					<Select
-						selected={appState.fontFamilyOption}
-						options={fontFamilyOptions}
-						title={'Шрифт'}
-						onChange={handleChangeFontFamily}
+				<aside className={clsx ({[styles.container_open]:isOpen, [styles.container]:!isOpen})}>
+					<form className={styles.form} onSubmit={(e:FormEvent) => {
+						e.preventDefault();
+						applyState()
+						}}>
 						
-					/>
+						<Text as={'h2'} size={31} weight={800} uppercase={true}>
+							Задайте параметры
+						</Text>
 
-					<RadioGroup
-						selected={appState.fontSizeOption}
-						options={fontSizeOptions}
-						name={''}
-						title={'Размер шрифта'}
-						onChange={handleChangeFontSize}
+						<Select
+							selected={formState.fontFamilyOption}
+							options={fontFamilyOptions}
+							title={'Шрифт'}
+							onChange={handleChangeFontFamily}
+							
+						/>
+
+						<RadioGroup
+							selected={formState.fontSizeOption}
+							options={fontSizeOptions}
+							name={''}
+							title={'Размер шрифта'}
+							onChange={handleChangeFontSize}
 
 
-					/>
+						/>
 
-					<Select
-						selected={appState.fontColor}
-						options={fontColors}
-						title={'Цвет шрифта'}
-						onChange={handleChangeFontColor}
+						<Select
+							selected={formState.fontColor}
+							options={fontColors}
+							title={'Цвет шрифта'}
+							onChange={handleChangeFontColor}
 
-					/>
+						/>
 
-					<Separator />
+						<Separator />
 
-					<Select
-						selected={appState.backgroundColor}
-						options={backgroundColors}
-						title={'Цвет фона'}
-						onChange={handleChangeBackgroundColor}
+						<Select
+							selected={formState.backgroundColor}
+							options={backgroundColors}
+							title={'Цвет фона'}
+							onChange={handleChangeBackgroundColor}
 
-					/>
+						/>
 
-					<Select
-						selected={appState.contentWidth}
-						options={contentWidthArr}
-						title={'Ширина компонента'}
-						onChange={handleChangeContentWidth}
+						<Select
+							selected={formState.contentWidth}
+							options={contentWidthArr}
+							title={'Ширина компонента'}
+							onChange={handleChangeContentWidth}
 
-					/>
+						/>
 
-					<div className={styles.bottomContainer}>
-						<Button title='Сбросить' type='reset' onClick={defaultState}/>
-						<Button title='Применить' type='submit' />
-					</div>
-				</form>
-			</aside>
-		</>
-	);
-};
+						<div className={styles.bottomContainer}>
+							<Button title='Сбросить' type='reset' onClick={setDefaultState}/>
+							<Button title='Применить' type='submit' />
+						</div>
+					</form>
+				</aside>
+			</div>
+		);
+	};
