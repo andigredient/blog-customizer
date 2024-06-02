@@ -12,6 +12,7 @@ export const useEnterSubmit = ({
 	useEffect(() => {
 		const placeholderEl = placeholderRef.current;
 		if (!placeholderEl) return;
+		//console.log(placeholderEl)
 
 		const handleEnterKeyDown = (event: KeyboardEvent) => {
 			if (event.key === 'Enter') {

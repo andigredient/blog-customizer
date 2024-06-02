@@ -24,6 +24,13 @@ export const Option = (props: OptionProps) => {
 		(clickedValue: OptionType['value']): MouseEventHandler<HTMLLIElement> =>
 		() => {
 			onClick(clickedValue);
+			console.log("передало функ", onClick(clickedValue));//удалить
+			console.log("передало знач", clickedValue);//удалить
+
+
+
+
+
 		};
 
 	useEnterOptionSubmit({
