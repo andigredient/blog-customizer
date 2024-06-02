@@ -50,19 +50,20 @@ export const ArticleParamsForm = ({ setAppState  }:ArticleParamsFormProps) => {
 		setOpen(!isOpen);
 	};
 
-	function outsideClickClose(event: KeyboardEvent) {
+	function escClickClose(event: KeyboardEvent) {
 		if (event.code == 'Escape') {
 			setOpen(false);
 		}
 	}
 	
 	useEffect(() => {
-		document.addEventListener('keydown', outsideClickClose);
-
-		return () => {
-			document.removeEventListener('keydown', outsideClickClose);
-		};
-	});
+		if (isOpen) {
+			document.addEventListener('keydown', escClickClose);
+		}
+		else {
+			document.removeEventListener('keydown', escClickClose);
+		}	
+	}, [isOpen]);
 
 
 	useOutsideClickClose({isOpen, rootRef, onClose:() => setOpen(false), onChange:setOpen})
